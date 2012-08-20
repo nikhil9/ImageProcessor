@@ -1,0 +1,8 @@
+README 
+======
+Requiers plugin development environment to build it from code. Refer http://josm.openstreetmap.de/wiki/DevelopersGuide/DevelopingPlugins
+Using Plugin:
+*.jar file included in /dist can be used.
+*Import images and correlate them with gpx track. 
+*Right Click on Image Layer and select 'Process Image'.
+*Dialog displays importted images and can process for Swedish speed limit 70.
