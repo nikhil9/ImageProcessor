@@ -17,11 +17,19 @@ import org.openstreetmap.josm.gui.layer.Layer.LayerAction;
 import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
 import org.openstreetmap.josm.gui.layer.geoimage.ImageEntry;
 
-
+/**
+ * Collects all geotagged images to List<ImageEntry>.
+ * Create object of Processor class and provide List<ImageEntry>
+ * @author nikhil
+ *
+ */
 class ImageProcessingAction extends AbstractAction implements LayerAction {
 
 	final static boolean debug = false;
 
+	/**
+	 * Provides name for menu
+	 */
 	public ImageProcessingAction() {
 		super("Process Images for signs");
 	}
@@ -30,7 +38,7 @@ class ImageProcessingAction extends AbstractAction implements LayerAction {
 
 		GeoImageLayer layer = getLayer();
 		final List<ImageEntry> images = new ArrayList<ImageEntry>();
-		List<ImageEntry> processedImages = new ArrayList<ImageEntry>();
+
 		for (ImageEntry e : layer.getImages()){
 			images.add(e);
 		}
@@ -55,12 +63,12 @@ class ImageProcessingAction extends AbstractAction implements LayerAction {
 
 	}
 
-	static class VideoProcessingRunnable extends PleaseWaitRunnable {
+	static class ImageProcessingRunnable extends PleaseWaitRunnable {
 		final private List<ImageEntry> images;
 		private boolean canceled = false;
 
-		public VideoProcessingRunnable(List<ImageEntry> images) {
-			super("Videoprocessor");
+		public ImageProcessingRunnable(List<ImageEntry> images) {
+			super("ImageProcessor");
 			this.images = images;
 		}
 
@@ -82,6 +90,10 @@ class ImageProcessingAction extends AbstractAction implements LayerAction {
 		}
 	}
 
+	/**
+	 * Provides geoImageLayer
+	 * @return GeoImageLayer
+	 */
 	private GeoImageLayer getLayer() {
 		return (GeoImageLayer)LayerListDialog.getInstance()
 				.getModel()

@@ -50,10 +50,18 @@ import com.googlecode.javacv.cpp.opencv_core.CvScalar;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 import com.googlecode.javacv.cpp.opencv_objdetect.CascadeClassifier;
 
-
+/**
+ * Provides dialog for plugin.
+ * Interacts with images and process them for sign detection
+ * @author nikhil
+ *
+ */
 public final class Processor extends JFrame {
 
 	private final JFileChooser fileChooser = new JFileChooser();
+	/**
+	 * Stores path of training file
+	 */
 	public String CASCADE_FILE = null;
 	private final JLabel imageView = new JLabel();
 	private IplImage image = null;
@@ -73,6 +81,10 @@ public final class Processor extends JFrame {
 
 
 
+	/**
+	 * provides gui for plugin and zoom map to location of displayed images.
+	 * @throws HeadlessException
+	 */
 	public Processor() throws HeadlessException {
 		super("Image Processor");
 		Main.map.mapView.zoomToFactor(0.15);
@@ -184,6 +196,11 @@ public final class Processor extends JFrame {
 		add(imageScrollPane, BorderLayout.CENTER);
 	}
 
+	/**
+	 * Open image from imageEntry file path and returns as IplImage for display
+	 * and image processing
+	 * @return IplImage
+	 */
 	private IplImage openImage() {
 		final String path = imageEntry.getFile().getAbsolutePath();
 		if (imageEntry == null){
@@ -206,6 +223,11 @@ public final class Processor extends JFrame {
 	}
 
 
+	/**
+	 * process images for sign detection from List<ImageEntry>
+	 * @param imgList imput List<ImageEntry>
+	 * @return List<ImageEntry> of detected images
+	 */
 	private List<ImageEntry> processImage(List<ImageEntry> imgList) {
 		List<ImageEntry> processedImageList = new ArrayList<ImageEntry>();
 		for (int i = 0; i < imgList.size(); i++){
@@ -261,7 +283,7 @@ public final class Processor extends JFrame {
 					Main.parent,
 					"No image with given sign was found",
 					"Image Processor",
-					JOptionPane.ERROR_MESSAGE
+					JOptionPane.INFORMATION_MESSAGE
 					);
 			return null;
 		}
@@ -271,7 +293,7 @@ public final class Processor extends JFrame {
 					Main.parent,
 					"Some image with given sign was found",
 					"Image Processor",
-					JOptionPane.ERROR_MESSAGE
+					JOptionPane.INFORMATION_MESSAGE
 					);
 			return processedImageList;
 		}
@@ -280,6 +302,11 @@ public final class Processor extends JFrame {
 	}
 
 
+	/**
+	 * Obtains List<ImageEntry> and set first image to imageView and
+	 * corresponding marker position
+	 * @param imageList List<ImageEntry>
+	 */
 	public void getImageEntryList(List<ImageEntry> imageList){
 		this.imageList =  imageList;
 		imageEntry = imageList.get(0);
@@ -295,7 +322,11 @@ public final class Processor extends JFrame {
 	}
 
 
-
+	/**
+	 * Provides next image from List<ImageEntry> to IplImage image
+	 * and sets marker at corresponding position
+	 * @param imageList List<ImageEntry>
+	 */
 	private void nextImageEntry(List<ImageEntry> imageList){
 		imageEntry = imageList.get(nextFrame);
 		Main.map.mapView.zoomTo(imageEntry.getPos().getEastNorth());
@@ -316,6 +347,11 @@ public final class Processor extends JFrame {
 
 	}
 
+	/**
+	 * Provides previous image from List<ImageEntry> to IplImage image
+	 * and sets marker at corresponding position
+	 * @param imageList List<ImageEntry>
+	 */
 	private void prevImageEntry(List<ImageEntry> imageList){
 		imageEntry = imageList.get(prevFrame);
 		Main.map.mapView.zoomTo(imageEntry.getPos().getEastNorth());
@@ -327,15 +363,24 @@ public final class Processor extends JFrame {
 		markerLayer.data.add(currentPos);
 	}
 
+	/**
+	 * Display sign detected images using ProcessedFrames()
+	 * @param imgList processed and sign detected List<ImageEntry>
+	 */
 	public void showProcessedImages(List<ImageEntry> imgList){
 		if(imgList != null){
-			final ProcessedFrames t = new ProcessedFrames(CASCADE_FILE.toString());
+			final ProcessedFrames t = new ProcessedFrames(CASCADE_FILE.toString(), markerLayer);
 			t.getImageEntryList(imgList);
 			t.pack();
 			t.setVisible(true);
 		}
 
 	}
+
+	/**
+	 * Provides dialog to select training file
+	 * @return location of training file
+	 */
 	public String getCascadeFile(){
 		if (fileChooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
 			return null;
@@ -345,6 +390,10 @@ public final class Processor extends JFrame {
 
 	}
 
+	/**
+	 * Creates MarkerLayer
+	 * @param latlon Sets initial marker at this LatLon
+	 */
 	public void CreateMarkerLayer(LatLon latlon){
 
 		Collection<Layer> layers = Main.map.mapView.getAllLayers();
